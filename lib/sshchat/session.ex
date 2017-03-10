@@ -17,10 +17,9 @@ defmodule SSHChat.Session do
 
   # --- Callbacks ---
 
-  def init({:ok, user, addr}) do
+  def init({:ok, user, _addr}) do
     IO.puts("Welcome to Elixir SSHChat #{user}!")
     SSHChat.Room.register(self(), user)
-    #spawn_link fn -> input_loop(addr) end
     {:ok, []}
   end
 
@@ -29,8 +28,8 @@ defmodule SSHChat.Session do
     {:noreply, state}
   end
 
-  def input_loop({user, addr, pid} = state) do
-    case IO.gets("#{user} > ") do
+  def input_loop({user, _addr, pid} = state) do
+    case IO.gets("<#{user}> ") do
       :eof ->
         # I assumed that sending a ^D would get me this, but it's trapped somehow and I never see its
         SSHChat.Room.unregister(pid)
@@ -46,7 +45,6 @@ defmodule SSHChat.Session do
         IO.puts("Got an error: #{reason}")
 
       s ->
-        #IO.puts("You said #{s}")
         SSHChat.Room.send_from(pid, String.trim(String.Chars.to_string(s)))
         input_loop(state)
     end
