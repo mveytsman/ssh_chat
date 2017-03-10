@@ -7,10 +7,10 @@ defmodule SSHChat.Supervisor do
 
   def init(:ok) do
     children = [
+      worker(SSHChat.Daemon, []),
       worker(SSHChat.Room, []),
-      worker(SSHChat.Daemon, [])
     ]
 
-    supervise(children, strategy: :one_for_one)
+    supervise(children, strategy: :rest_for_one)
   end
 end
