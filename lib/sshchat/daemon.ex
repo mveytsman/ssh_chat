@@ -1,9 +1,9 @@
 defmodule SSHChat.Daemon do
-  @port 2222
   @key_dir './ssh_dir' #this *has* to be a charlist because erlang
 
   def start_link do
-    {:ok, pid} = :ssh.daemon(@port,
+    port = Application.get_env(:sshchat, :port)
+    {:ok, pid} = :ssh.daemon(port,
       system_dir: @key_dir,
       key_cb: SSHChat.NopKeyApi,
       shell: &SSHChat.Session.start_link(&1,&2),
