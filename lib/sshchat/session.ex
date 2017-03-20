@@ -3,22 +3,59 @@ defmodule SSHChat.Session do
 
   # --- Client ---
 
-  def start_link(user, addr) do
-   # spawn fn -> IO.puts("start link") end
-    spawn fn ->
-      {:ok, pid} = GenServer.start(__MODULE__, {:ok, user, addr}, [])
-      input_loop({user, addr, pid})
+  def start_session(user, addr) do
+    # starts a session via supervisor
+    {:ok, session_pid} = Supervisor.start_child(SSHChat.Session.Supervisor, [user, addr])
+    spawn fn -> initialize_io_loop(user, addr, session_pid) end
+  end
+
+  def send_message(pid, msg) do
+    GenServer.cast(pid, {:message, msg})
+  end
+
+  # --- Input Loop
+  defp initialize_io_loop(user, addr, session_pid) do
+    # If the listener dies, kill us and vice versa
+    Process.link(session_pid)
+    # Set the group leader of the session so it writes IO to the right place
+    Process.group_leader(session_pid, Process.group_leader)
+
+    IO.puts("Welcome to Elixir SSHChat #{user}!")
+    SSHChat.Session.input_loop({user, addr, session_pid})
+  end
+
+  def input_loop({user, _addr, pid} = state) do
+    case IO.gets("<#{user}> ") do
+      :eof ->
+        # I assumed that sending a ^D would get me this, but it's trapped somehow and I never see its
+        IO.puts("Goodbye! (eof)")
+
+      {:error, :interrupted} ->
+        # Right now ^C is the only way to exit
+        IO.puts("Goodbye! (interrupt)")
+        GenServer.stop(pid, :normal)
+
+      {:error, reason} ->
+        IO.puts("Got an error: #{reason}")
+        GenServer.stop(pid, {:error, reason})
+
+      msg ->
+        SSHChat.Room.message(pid, String.trim(String.Chars.to_string(msg)))
+        input_loop(state)
+
     end
   end
 
-  def send_message(pid, message) do
-    GenServer.cast(pid, {:message, message})
+
+  # --- GenServer Client
+
+  def start_link(user, addr) do
+    GenServer.start_link(__MODULE__, {:ok, user, addr}, [])
   end
 
-  # --- Callbacks ---
+  # --- GenServer Callbacks ---
 
   def init({:ok, user, _addr}) do
-    IO.puts("Welcome to Elixir SSHChat #{user}!")
     SSHChat.Room.register(self(), user)
     {:ok, []}
   end
@@ -26,27 +63,5 @@ defmodule SSHChat.Session do
   def handle_cast({:message, msg}, state) do
     IO.puts(msg)
     {:noreply, state}
-  end
-
-  def input_loop({user, _addr, pid} = state) do
-    case IO.gets("<#{user}> ") do
-      :eof ->
-        # I assumed that sending a ^D would get me this, but it's trapped somehow and I never see its
-        SSHChat.Room.unregister(pid)
-        IO.puts("Goodbye! (eof)")
-
-      {:error, :interrupted} ->
-        # Right now ^C is the only way to exit
-        SSHChat.Room.unregister(pid)
-        IO.puts("Goodbye! (interrupt)")
-
-      {:error, reason} ->
-        SSHChat.Room.unregister(pid)
-        IO.puts("Got an error: #{reason}")
-
-      s ->
-        SSHChat.Room.send_from(pid, String.trim(String.Chars.to_string(s)))
-        input_loop(state)
-    end
   end
 end

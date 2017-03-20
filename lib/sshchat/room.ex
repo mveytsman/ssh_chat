@@ -1,43 +1,72 @@
 defmodule SSHChat.Room do
   @moduledoc """
   The users connected to the chat room
+
+  There is only one room
   """
+
+  use GenServer
 
   @name __MODULE__
 
   def start_link do
-    Agent.start_link(fn -> %{} end, name: @name)
+    GenServer.start_link(__MODULE__, :ok, name: @name)
   end
 
   def register(pid, name) do
     # let's say for now that the user list is going to be a map from peer addresses to pods
-    Agent.update(@name, &Map.put(&1, pid, name))
     announce("#{name} joined")
+    GenServer.cast(@name, {:register, pid, name})
   end
 
   def unregister(pid) do
-    name = Agent.get_and_update(@name, &Map.pop(&1, pid))
+    name = GenServer.call(@name, {:unregister, pid})
     announce("#{name} left")
   end
 
-  def inspect() do
-    Agent.get(@name, fn(x) -> x end)
-  end
-
-  def get_name(pid) do
-    Agent.get(@name, &Map.get(&1, pid))
-  end
-
   def announce(message) do
-    Agent.get(@name, &Map.keys(&1))
-    |> Enum.each(fn(pid) -> SSHChat.Session.send_message(pid, " * #{message}") end)
+    GenServer.cast(@name, {:announce, message})
   end
 
-  def send_from(pid, message) do
-    name = get_name(pid)
-    #SSHChat.Session.send_message(pid, "<you> #{message}")
-    Agent.get(@name, &Map.delete(&1, pid)) # send to everyone else
+  def message(from, message) do
+    GenServer.cast(@name, {:message, from, message})
+  end
+
+  # --- Callbacks ---
+
+  def init(:ok) do
+    {:ok, %{}}
+  end
+
+  def handle_call({:unregister, pid}, _from, sessions) do
+    {name, sessions} = Map.pop(sessions, pid)
+    {:reply, name, Map.delete(sessions, name)}
+  end
+
+  def handle_cast({:register, pid, name}, sessions) do
+    Process.monitor(pid)
+    {:noreply, Map.put(sessions, pid, name)}
+  end
+
+   def handle_cast({:announce, message}, sessions) do
+    Map.keys(sessions)
+    |> Enum.each(fn(pid) -> SSHChat.Session.send_message(pid, " * #{message}") end)
+    {:noreply, sessions}
+  end
+
+  def handle_cast({:message, from, message}, sessions) do
+    {name, others} = Map.pop(sessions, from)
+
+    others
     |> Map.keys
     |> Enum.each(fn(pid) -> SSHChat.Session.send_message(pid, "#{name}: #{message}") end)
+    {:noreply, sessions}
   end
+
+  def handle_info({:DOWN, _ref, :process, pid, _reason}, sessions) do
+    {name, sessions} = Map.pop(sessions, pid)
+    announce("#{name} left")
+    {:noreply, sessions}
+  end
+
 end
