@@ -23,7 +23,7 @@ use Mix.Releases.Config,
 
 environment :dev do
   set dev_mode: true
-  set include_erts: false
+  set include_erts: true
   set cookie: :",<,Et]O24XKnEftO%dQ*!$>E8YA;a.t_bbaip<{XLI?/>TU8jYcfw{~g8OxUl>4P"
 end
 
