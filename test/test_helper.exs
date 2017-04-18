@@ -1,4 +1,4 @@
 ExUnit.start()
 
-Ecto.Adapters.SQL.Sandbox.mode(SshChat.Repo, :manual)
+Ecto.Adapters.SQL.Sandbox.mode(SSHChat.Repo, :manual)
 

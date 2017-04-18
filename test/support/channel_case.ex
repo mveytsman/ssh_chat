@@ -1,4 +1,4 @@
-defmodule SshChat.Web.ChannelCase do
+defmodule SSHChat.Web.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -21,15 +21,15 @@ defmodule SshChat.Web.ChannelCase do
       use Phoenix.ChannelTest
 
       # The default endpoint for testing
-      @endpoint SshChat.Web.Endpoint
+      @endpoint SSHChat.Web.Endpoint
     end
   end
 
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(SshChat.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(SSHChat.Repo)
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(SshChat.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(SSHChat.Repo, {:shared, self()})
     end
     :ok
   end

@@ -1,4 +1,4 @@
-defmodule SshChat.Web.ErrorHelpers do
+defmodule SSHChat.Web.ErrorHelpers do
   @moduledoc """
   Conveniences for translating and building error messages.
   """
@@ -32,9 +32,9 @@ defmodule SshChat.Web.ErrorHelpers do
     #     dgettext "errors", "is invalid"
     #
     if count = opts[:count] do
-      Gettext.dngettext(SshChat.Web.Gettext, "errors", msg, msg, count, opts)
+      Gettext.dngettext(SSHChat.Web.Gettext, "errors", msg, msg, count, opts)
     else
-      Gettext.dgettext(SshChat.Web.Gettext, "errors", msg, opts)
+      Gettext.dgettext(SSHChat.Web.Gettext, "errors", msg, opts)
     end
   end
 end

@@ -1,4 +1,4 @@
-defmodule SshChat.Repo do
+defmodule SSHChat.Repo do
   use Ecto.Repo, otp_app: :ssh_chat
 
   @doc """

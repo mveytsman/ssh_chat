@@ -1,4 +1,4 @@
-# SshChat
+# SSHChat
 
 To start your Phoenix server:
 

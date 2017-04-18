@@ -1,5 +1,5 @@
-defmodule SshChat.Web.PageControllerTest do
-  use SshChat.Web.ConnCase
+defmodule SSHChat.Web.PageControllerTest do
+  use SSHChat.Web.ConnCase
 
   test "GET /", %{conn: conn} do
     conn = get conn, "/"

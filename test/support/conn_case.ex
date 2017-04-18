@@ -1,4 +1,4 @@
-defmodule SshChat.Web.ConnCase do
+defmodule SSHChat.Web.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -19,18 +19,18 @@ defmodule SshChat.Web.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
-      import SshChat.Web.Router.Helpers
+      import SSHChat.Web.Router.Helpers
 
       # The default endpoint for testing
-      @endpoint SshChat.Web.Endpoint
+      @endpoint SSHChat.Web.Endpoint
     end
   end
 
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(SshChat.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(SSHChat.Repo)
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(SshChat.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(SSHChat.Repo, {:shared, self()})
     end
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end

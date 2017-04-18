@@ -1,4 +1,4 @@
-defmodule SshChat.Mixfile do
+defmodule SSHChat.Mixfile do
   use Mix.Project
 
   def project do
@@ -16,7 +16,7 @@ defmodule SshChat.Mixfile do
   #
   # Type `mix help compile.app` for more information.
   def application do
-    [mod: {SshChat.Application, []},
+    [mod: {SSHChat.Application, []},
      extra_applications: [:logger, :runtime_tools]]
   end
 
