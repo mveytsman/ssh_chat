@@ -56,3 +56,6 @@ config :ssh_chat, SSHChat.Repo,
   database: "ssh_chat_dev",
   hostname: "localhost",
   pool_size: 10
+
+# SSH Port to use
+config :ssh_chat, port: 2222

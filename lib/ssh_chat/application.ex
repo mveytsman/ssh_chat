@@ -14,6 +14,7 @@ defmodule SSHChat.Application do
       supervisor(SSHChat.Web.Endpoint, []),
       # Start your own worker by calling: SSHChat.Worker.start_link(arg1, arg2, arg3)
       # worker(SSHChat.Worker, [arg1, arg2, arg3]),
+      supervisor(SSHChat.SSH.Supervisor, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

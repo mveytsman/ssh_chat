@@ -17,7 +17,7 @@ defmodule SSHChat.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {SSHChat.Application, []},
-     extra_applications: [:logger, :runtime_tools]]
+     extra_applications: [:logger, :runtime_tools, :crypto, :ssh]]
   end
 
   # Specifies which paths to compile per environment.

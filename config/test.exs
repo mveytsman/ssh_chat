@@ -17,3 +17,6 @@ config :ssh_chat, SSHChat.Repo,
   database: "ssh_chat_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+# SSH Port to use
+config :ssh_chat, port: 2222
