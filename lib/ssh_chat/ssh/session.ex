@@ -56,7 +56,8 @@ defmodule SSHChat.SSH.Session do
   # --- GenServer Callbacks ---
 
   def init({:ok, user, _addr}) do
-    SSHChat.SSH.Room.register(self(), user)
+    # user is a charlist, we want strings
+    SSHChat.SSH.Room.register(self(), "#{user}")
     {:ok, []}
   end
 

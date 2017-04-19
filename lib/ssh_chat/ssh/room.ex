@@ -1,4 +1,5 @@
 defmodule SSHChat.SSH.Room do
+  alias SSHChat.Web.Endpoint, as: WebEndpoint
   @moduledoc """
   The users connected to the chat room
 
@@ -48,15 +49,23 @@ defmodule SSHChat.SSH.Room do
     {:noreply, Map.put(sessions, pid, name)}
   end
 
-   def handle_cast({:announce, message}, sessions) do
+  def handle_cast({:announce, message}, sessions) do
+    WebEndpoint.broadcast("room:lobby", "new_msg", %{user: "CHANNEL", body: message})
     Map.keys(sessions)
     |> Enum.each(fn(pid) -> SSHChat.SSH.Session.send_message(pid, " * #{message}") end)
     {:noreply, sessions}
   end
 
   def handle_cast({:message, from, message}, sessions) do
-    {name, others} = Map.pop(sessions, from)
-
+    # TODO: refactor this
+    {name, others} = cond do
+      is_pid(from) -> 
+        {name, others} = Map.pop(sessions, from)
+        WebEndpoint.broadcast("room:lobby", "new_msg", %{user: name, body: message})
+        {name, others}
+      :else -> {from, sessions}
+    end
+    
     others
     |> Map.keys
     |> Enum.each(fn(pid) -> SSHChat.SSH.Session.send_message(pid, "#{name}: #{message}") end)

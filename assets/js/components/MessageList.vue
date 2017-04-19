@@ -7,16 +7,19 @@
            v-on:keyup.enter="add_message"
            v-on:keydown="clear_error">
     <button v-on:click="add_message">Message</button>
-    <p class="error" v-if="error">you have to send a message</p>  
+    <p class="error" v-if="error">you have to send a message</p>
   </div>
 </template>
 
 <script>
+import { Socket } from "phoenix"
 import Message from './Message.vue'
 export default {
   name: 'message-list',
   data() {
     return {
+      socket: null,
+      channel: null,
       error: false,
       username: "anonymous",
       new_message: "",
@@ -24,26 +27,38 @@ export default {
     }
   },
   methods: {
-    clear_error: function () {
+    clear_error() {
       if (this.error) {
         this.error = false
       }
     },
 
-    add_message: function () {
+    add_message() {
       if (this.new_message != "") {
-        this.messages.push(
-          {
-            text: this.new_message,
-            id: Date.now(),
-            user: this.username
-          }
-        )
+        let msg = {
+          body: this.new_message,
+          id: Date.now(),
+          user: this.username
+        }
+        // this.messages.push(msg)
+        this.channel.push("new_msg", msg)
         this.new_message = ""
       } else {
         this.error = true
       }
     }
+  },
+  mounted() {
+    this.socket = new Socket("/socket")
+    this.socket.connect()
+    this.channel = this.socket.channel("room:lobby", {});
+    this.channel.on("new_msg", payload => {
+      payload.received_at = Date();
+      this.messages.push(payload);
+    });
+    this.channel.join()
+      .receive("ok", response => { console.log("Joined successfully", response) })
+      .receive("error", response => { console.log("Unable to join", response) })
   },
   components: {
     Message
@@ -52,8 +67,8 @@ export default {
 </script>
 
 <style lang="scss">
-  .error::before {
-    padding-right: .2rem;
-    content: "error:";
-  }
+.error::before {
+  padding-right: .2rem;
+  content: "error:";
+}
 </style>

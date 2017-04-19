@@ -1,6 +1,6 @@
 <template>
   <div class="message">
-    <span class="username">{{ message.user }}</span> {{ message.text }}
+    <span class="username">{{ message.user }}</span> {{ message.body }}
   </div>
 </template>
 

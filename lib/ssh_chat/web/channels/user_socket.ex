@@ -2,7 +2,7 @@ defmodule SSHChat.Web.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", SSHChat.Web.RoomChannel
+  channel "room:*", SSHChat.Web.RoomChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
