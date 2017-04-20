@@ -59,3 +59,5 @@ config :ssh_chat, SSHChat.Repo,
 
 # SSH Port to use
 config :ssh_chat, port: 2222
+
+import_config "dev.secret.exs"

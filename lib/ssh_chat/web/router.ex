@@ -9,6 +9,10 @@ defmodule SSHChat.Web.Router do
     plug :put_secure_browser_headers
   end
 
+  pipeline :auth do
+    plug Ueberauth
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -17,6 +21,13 @@ defmodule SSHChat.Web.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+  end
+
+  scope "/auth", SSHChat.Web do
+    pipe_through :browser
+
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
   end
 
   # Other scopes may use custom stacks.
