@@ -7,14 +7,14 @@ use Mix.Config
 
 # General application configuration
 config :ssh_chat,
-  ecto_repos: [SSHChat.Repo]
+  ecto_repos: [SshChat.Repo]
 
 # Configures the endpoint
-config :ssh_chat, SSHChat.Web.Endpoint,
+config :ssh_chat, SshChat.Web.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "nBiLTHjm8LVFVf0PFSgns0TDheA+X8u0Ze5KV6dGwxZMfdaUnRK7w1dOlqWZ+6cn",
-  render_errors: [view: SSHChat.Web.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: SSHChat.PubSub,
+  render_errors: [view: SshChat.Web.ErrorView, accepts: ~w(html json)],
+  pubsub: [name: SshChat.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger

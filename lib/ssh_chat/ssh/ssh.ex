@@ -1,3 +1,3 @@
-defmodule SSHChat.SSH do
-  
+defmodule SshChat.SSH do
+
 end

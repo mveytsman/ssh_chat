@@ -1,7 +1,7 @@
-defmodule SSHChat.Web.Endpoint do
+defmodule SshChat.Web.Endpoint do
   use Phoenix.Endpoint, otp_app: :ssh_chat
 
-  socket "/socket", SSHChat.Web.UserSocket
+  socket "/socket", SshChat.Web.UserSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -38,7 +38,7 @@ defmodule SSHChat.Web.Endpoint do
     key: "_ssh_chat_key",
     signing_salt: "yDi8bpTU"
 
-  plug SSHChat.Web.Router
+  plug SshChat.Web.Router
 
   @doc """
   Dynamically loads configuration from the system environment

@@ -1,4 +1,4 @@
-defmodule SSHChat.SSH.NopKeyApi do
+defmodule SshChat.SSH.NopKeyApi do
   @moduledoc """
   NOP out out the ssh_server_key_api behaviour since we accept all users
   """

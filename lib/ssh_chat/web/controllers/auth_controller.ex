@@ -1,9 +1,9 @@
 require IEx
-defmodule SSHChat.Web.AuthController do
+defmodule SshChat.Web.AuthController do
   @moduledoc """
   Auth controller responsible for handling Ueberauth responses
   """
-  use SSHChat.Web, :controller
+  use SshChat.Web, :controller
   plug Ueberauth
 
   alias Ueberauth.Strategy.Helpers

@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Hello SSHChat!</title>
+    <title>Hello SshChat!</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
      <link rel="stylesheet" href="<%= static_path(@conn, "/css/components.css") %>">
   </head>

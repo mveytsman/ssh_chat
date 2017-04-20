@@ -1,5 +1,5 @@
-defmodule SSHChat.Web.Router do
-  use SSHChat.Web, :router
+defmodule SshChat.Web.Router do
+  use SshChat.Web, :router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -17,13 +17,13 @@ defmodule SSHChat.Web.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", SSHChat.Web do
+  scope "/", SshChat.Web do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
   end
 
-  scope "/auth", SSHChat.Web do
+  scope "/auth", SshChat.Web do
     pipe_through :browser
 
     get "/:provider", AuthController, :request
@@ -31,7 +31,7 @@ defmodule SSHChat.Web.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", SSHChat.Web do
+  # scope "/api", SshChat.Web do
   #   pipe_through :api
   # end
 end

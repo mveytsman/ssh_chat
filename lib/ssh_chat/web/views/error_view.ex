@@ -1,5 +1,5 @@
-defmodule SSHChat.Web.ErrorView do
-  use SSHChat.Web, :view
+defmodule SshChat.Web.ErrorView do
+  use SshChat.Web, :view
 
   def render("404.html", _assigns) do
     "Page not found"

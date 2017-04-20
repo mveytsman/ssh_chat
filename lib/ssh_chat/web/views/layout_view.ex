@@ -1,3 +1,3 @@
-defmodule SSHChat.Web.LayoutView do
-  use SSHChat.Web, :view
+defmodule SshChat.Web.LayoutView do
+  use SshChat.Web, :view
 end

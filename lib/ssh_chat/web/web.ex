@@ -1,12 +1,12 @@
-defmodule SSHChat.Web do
+defmodule SshChat.Web do
   @moduledoc """
   A module that keeps using definitions for controllers,
   views and so on.
 
   This can be used in your application as:
 
-      use SSHChat.Web, :controller
-      use SSHChat.Web, :view
+      use SshChat.Web, :controller
+      use SshChat.Web, :view
 
   The definitions below will be executed for every view,
   controller, etc, so keep them short and clean, focused
@@ -18,17 +18,17 @@ defmodule SSHChat.Web do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: SSHChat.Web
+      use Phoenix.Controller, namespace: SshChat.Web
       import Plug.Conn
-      import SSHChat.Web.Router.Helpers
-      import SSHChat.Web.Gettext
+      import SshChat.Web.Router.Helpers
+      import SshChat.Web.Gettext
     end
   end
 
   def view do
     quote do
       use Phoenix.View, root: "lib/ssh_chat/web/templates",
-                        namespace: SSHChat.Web
+                        namespace: SshChat.Web
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_csrf_token: 0, get_flash: 2, view_module: 1]
@@ -36,9 +36,9 @@ defmodule SSHChat.Web do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import SSHChat.Web.Router.Helpers
-      import SSHChat.Web.ErrorHelpers
-      import SSHChat.Web.Gettext
+      import SshChat.Web.Router.Helpers
+      import SshChat.Web.ErrorHelpers
+      import SshChat.Web.Gettext
     end
   end
 
@@ -53,7 +53,7 @@ defmodule SSHChat.Web do
   def channel do
     quote do
       use Phoenix.Channel
-      import SSHChat.Web.Gettext
+      import SshChat.Web.Gettext
     end
   end
 

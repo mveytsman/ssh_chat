@@ -1,4 +1,4 @@
-defmodule SSHChat.DataCase do
+defmodule SshChat.DataCase do
   @moduledoc """
   This module defines the setup for tests requiring
   access to the application's data layer.
@@ -16,20 +16,20 @@ defmodule SSHChat.DataCase do
 
   using do
     quote do
-      alias SSHChat.Repo
+      alias SshChat.Repo
 
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import SSHChat.DataCase
+      import SshChat.DataCase
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(SSHChat.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(SshChat.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(SSHChat.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(SshChat.Repo, {:shared, self()})
     end
 
     :ok
