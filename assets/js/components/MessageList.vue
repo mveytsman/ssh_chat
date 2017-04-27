@@ -3,11 +3,14 @@
     <message v-for="m in messages"
              v-bind:message="m"
              :key="m.id" />
-    <input v-model="new_message"
-           v-on:keyup.enter="add_message"
-           v-on:keydown="clear_error">
-    <button v-on:click="add_message">Message</button>
-    <p class="error" v-if="error">you have to send a message</p>
+     <div class="message-input">
+     <input
+       v-model="new_message"
+       v-on:keyup.enter="add_message"
+       v-on:keydown="clear_error">
+      <button v-on:click="add_message">Message</button>
+      <p class="error" v-if="error">you have to send a message</p>
+    </div>
   </div>
 </template>
 
@@ -70,5 +73,9 @@ export default {
 .error::before {
   padding-right: .2rem;
   content: "error:";
+}
+
+.message-input {
+  margin-top: 1rem;
 }
 </style>

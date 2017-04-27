@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <h1>SSHChat: a frontend</h1>
     <message-list/>
   </div>
 </template>
@@ -11,7 +10,6 @@
    name: 'app',
    data() {
      return {
-       msg: 'Welcome to Your Vue.js App'
      }
    },
    components: {
@@ -25,7 +23,6 @@
    font-family: 'Avenir', Helvetica, Arial, sans-serif;
    -webkit-font-smoothing: antialiased;
    -moz-osx-font-smoothing: grayscale;
-   text-align: center;
    color: #2c3e50;
    margin-top: 60px;
  }
