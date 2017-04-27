@@ -1,5 +1,6 @@
 require IEx
 defmodule SshChat.Web.AuthController do
+
   @moduledoc """
   Auth controller responsible for handling Ueberauth responses
   """
@@ -7,6 +8,7 @@ defmodule SshChat.Web.AuthController do
   plug Ueberauth
 
   alias Ueberauth.Strategy.Helpers
+  alias SshChat.Auth
 
   def delete(conn, _params) do
     conn
@@ -22,7 +24,8 @@ defmodule SshChat.Web.AuthController do
   end
 
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _params) do
-    user = %{uid: auth.uid, name: auth.info.name, avatar: auth.info.urls.avatar_url}
+    user = Auth.get_or_create_user_by_ueberauth(auth)
+
     conn
     |> put_flash(:info, "Successfully authenticated.")
     |> put_session(:current_user, user)

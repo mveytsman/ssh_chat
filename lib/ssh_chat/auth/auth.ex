@@ -7,14 +7,17 @@ defmodule SshChat.Auth do
   alias SshChat.Repo
 
   alias SshChat.Auth.User
+  alias SshChat.Auth.Key
+
+  ### Users ###
 
   @doc """
   Returns the list of users.
 
   ## Examples
 
-      iex> list_users()
-      [%User{}, ...]
+  iex> list_users()
+  [%User{}, ...]
 
   """
   def list_users do
@@ -28,43 +31,25 @@ defmodule SshChat.Auth do
 
   ## Examples
 
-      iex> get_user!(123)
-      %User{}
+  iex> get_user!(123)
+  %User{}
 
-      iex> get_user!(456)
-      ** (Ecto.NoResultsError)
+  iex> get_user!(456)
+  ** (Ecto.NoResultsError)
 
   """
   def get_user!(id), do: Repo.get!(User, id)
-
-  @doc """
-  Gets a single user by token
-
-  Returns nil if user doesn't exist
-
-  ## Examples
-
-      iex> get_user_by_token("abc")
-      %User{}
-
-      iex> get_user_by_token("123")
-      nil
-
-  """
-
-
-  def get_user_by_token(token), do: Repo.get_by(User, token: token)
 
   @doc """
   Creates a user.
 
   ## Examples
 
-      iex> create_user(%{field: value})
-      {:ok, %User{}}
+  iex> create_user(%{field: value})
+  {:ok, %User{}}
 
-      iex> create_user(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+  iex> create_user(%{field: bad_value})
+  {:error, %Ecto.Changeset{}}
 
   """
   def create_user(attrs \\ %{}) do
@@ -73,16 +58,50 @@ defmodule SshChat.Auth do
     |> Repo.insert()
   end
 
+  def create_user_with_keys(user_attrs \\ %{}, keys \\ []) do
+    %User{}
+    |> user_changeset(user_attrs)
+    |> put_assoc(:keys, Enum.map(keys, &key_changeset(%Key{}, &1)))
+    |> Repo.insert()
+  end
+
+
+  @doc """
+  Creates a user given an ueberauth struct.
+  """
+  def get_or_create_user_by_ueberauth(%Ueberauth.Auth{} = auth) do
+    user = Repo.get_by(User, token: auth.credentials.token)
+
+    unless is_nil(user)  do
+      # we got the user already
+      user
+    else
+      # We actually have to create the user
+      token = auth.credentials.token
+      username = auth.info.nickname
+
+      {:ok, %OAuth2.Response{body: keys} } = Ueberauth.Strategy.Github.OAuth.get(token, "/users/#{username}/keys")
+
+      create_user_with_keys(%{
+        name: auth.info.name,
+        email: auth.info.email,
+        nick: username,
+        avatar_url: auth.info.urls.avatar_url,
+        token: auth.credentials.token},
+        keys)
+    end
+  end
+
   @doc """
   Updates a user.
 
   ## Examples
 
-      iex> update_user(user, %{field: new_value})
-      {:ok, %User{}}
+  iex> update_user(user, %{field: new_value})
+  {:ok, %User{}}
 
-      iex> update_user(user, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+  iex> update_user(user, %{field: bad_value})
+  {:error, %Ecto.Changeset{}}
 
   """
   def update_user(%User{} = user, attrs) do
@@ -96,11 +115,11 @@ defmodule SshChat.Auth do
 
   ## Examples
 
-      iex> delete_user(user)
-      {:ok, %User{}}
+  iex> delete_user(user)
+  {:ok, %User{}}
 
-      iex> delete_user(user)
-      {:error, %Ecto.Changeset{}}
+  iex> delete_user(user)
+  {:error, %Ecto.Changeset{}}
 
   """
   def delete_user(%User{} = user) do
@@ -112,8 +131,8 @@ defmodule SshChat.Auth do
 
   ## Examples
 
-      iex> change_user(user)
-      %Ecto.Changeset{source: %User{}}
+  iex> change_user(user)
+  %Ecto.Changeset{source: %User{}}
 
   """
   def change_user(%User{} = user) do
@@ -122,8 +141,27 @@ defmodule SshChat.Auth do
 
   defp user_changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:name, :email, :nick, :token])
-    |> validate_required([:name, :email, :nick, :token])
+    |> cast(attrs, [:email, :name, :nick, :avatar_url, :token])
+    |> validate_required([:email, :name, :nick, :avatar_url, :token])
     |> validate_format(:email, ~r/@/)
+  end
+
+  ### Keys ###
+
+  def list_keys do
+    Repo.all(Key)
+  end
+
+  def get_user_by_key(key) do
+    case Repo.get_by(Key, key: key) do
+      nil -> nil
+      key -> get_user!(key.user_id)
+    end
+  end
+
+  defp key_changeset(%Key{} = key, attrs) do
+    key
+    |> cast(attrs, [:key])
+    |> validate_required([:key])
   end
 end
