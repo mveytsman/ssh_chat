@@ -1,3 +1,10 @@
+# 🚨🚨🚨 WARNING DO NOT USE 🚨🚨🚨
+DO NOT USE THIS SOFTWARE ON A SERVER YOU CARE ABOUT
+
+This will open up a remote shell on your computer. `ssh host` drops you into chat, **but** `ssh host foo` executes `foo` as an erlang expression.
+
+YOU HAVE BEEN WARNED
+
 # SshChat
 
 To start your Phoenix server:
